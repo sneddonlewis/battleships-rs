@@ -19,13 +19,19 @@ fn main() {
     // Coord end;
     // sunkCount = 0;
 
-    let board = Board::new();
+    let mut board = Board::new();
+    board.cells[3] = MISS;
+    board.cells[99] = MISS;
     println!("{}", board);
 }
-const FOG_OF_WAR: char = '⬜';
-/// The playing board that ships are placed on.
+const FOG_OF_WAR: char = '~';
+const MISS: char = 'M';
+const HIT: char = 'X';
+const SHIP: char = 'O';
+
 struct Board {
     cells: Vec<char>,
+    fogged_cells: Vec<char>,
     width: usize,
     height: usize,
 }
@@ -33,7 +39,8 @@ struct Board {
 impl Board {
     fn new() -> Self {
         Board {
-            cells: vec![FOG_OF_WAR; 100],
+            cells: vec![MISS; 100],
+            fogged_cells: vec![FOG_OF_WAR; 100],
             width: 10,
             height: 10,
         }
@@ -46,7 +53,13 @@ impl Display for Board {
         for i in 0..self.height {
             write!(f, "\t|")?;
             for j in 0..self.width {
-                write!(f, "{}", &self.cells[i + j])?;
+                write!(f, "{}", &self.fogged_cells[(i * 10) + j])?;
+            }
+            write!(f, "|")?;
+
+            write!(f, "\t|")?;
+            for j in 0..self.width {
+                write!(f, "{}", &self.cells[(i * 10) + j])?;
             }
             writeln!(f, "|")?;
         }
