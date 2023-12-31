@@ -1,5 +1,5 @@
 #![allow(dead_code)]
-use std::fmt::Display;
+use std::{fmt::Display, io};
 
 fn main() {
     println!("Battleships");
@@ -19,12 +19,40 @@ fn main() {
     // Coord end;
     // sunkCount = 0;
 
-    Game::new().show_board();
+    let game = Game::new();
+    game.show_board();
+    let mut input = String::new();
+    println!("input fire coords");
+    let _ = io::stdin().read_line(&mut input).unwrap();
+
+    let coords: Coords = input.trim().try_into().unwrap();
+
+    println!("{:?}", coords);
 }
 const FOG_OF_WAR: char = '~';
 const MISS: char = 'M';
 const HIT: char = 'X';
 const SHIP: char = 'O';
+
+#[derive(Debug)]
+struct Coords {
+    row_idx: usize,
+    col_idx: usize,
+}
+
+impl TryFrom<&str> for Coords {
+    type Error = ();
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        if value.len() != 2 {
+            return Err(());
+        }
+
+        Ok(Coords {
+            row_idx: 9,
+            col_idx: 0,
+        })
+    }
+}
 
 struct Game {
     board: Board,
