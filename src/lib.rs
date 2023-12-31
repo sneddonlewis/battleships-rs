@@ -27,7 +27,7 @@ pub fn run() -> AppResult<()> {
     // Coord end;
     // sunkCount = 0;
 
-    let game = Game::new();
+    let mut game = Game::new();
     game.show_board();
     let mut input = String::new();
     println!("input fire coords");
@@ -36,6 +36,13 @@ pub fn run() -> AppResult<()> {
     let coords: Coords = input.trim().try_into()?;
 
     println!("{:?}", coords);
+
+    println!("firing");
+    let fire_result = game.fire(coords)?;
+
+    println!("fire result: {}", fire_result);
+
+    game.show_board();
 
     Ok(())
 }
@@ -67,16 +74,30 @@ impl Game {
         }
     }
 
-    fn show_board(self) {
+    fn show_board(&self) {
         println!("{}", self.board);
     }
 
-    fn fire(self, coords: Coords) -> AppResult<bool> {
+    fn fire(&mut self, coords: Coords) -> AppResult<bool> {
         let idx = self.board.width * coords.col_idx + coords.row_idx;
         if idx > self.board.cells.len() {
             return Err("coordinates fire off the board".into());
         }
-        Ok(true)
+        // unwrap as we've already checked index
+        let target = self.board.cells.get(idx).unwrap();
+        let fogged_target = self.board.fogged_cells.get(idx).unwrap();
+        if *fogged_target != '~' {
+            return Err("coordinates aren't targetting fog of war".into());
+        }
+        if *target == 'M' {
+            self.board.fogged_cells[idx] = 'M';
+            return Ok(false);
+        }
+        if *target == 'O' {
+            self.board.fogged_cells[idx] = 'X';
+            return Ok(true);
+        }
+        panic!("expected unreachable when firing. Coordinate/target combination not covered");
     }
 }
 
