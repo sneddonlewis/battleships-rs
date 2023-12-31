@@ -4,6 +4,11 @@ use std::{fmt::Display, io};
 pub type AppError = Box<dyn std::error::Error>;
 pub type AppResult<T> = Result<T, AppError>;
 
+const FOG_OF_WAR: char = '~';
+const MISS: char = 'M';
+const HIT: char = 'X';
+const SHIP: char = 'O';
+
 pub fn run() -> AppResult<()> {
     println!("Battleships");
     // AircraftCarrier 5
@@ -35,11 +40,6 @@ pub fn run() -> AppResult<()> {
     Ok(())
 }
 
-const FOG_OF_WAR: char = '~';
-const MISS: char = 'M';
-const HIT: char = 'X';
-const SHIP: char = 'O';
-
 #[derive(Debug)]
 struct Coords {
     row_idx: usize,
@@ -70,21 +70,29 @@ impl Game {
     fn show_board(self) {
         println!("{}", self.board);
     }
+
+    fn fire(self, coords: Coords) -> AppResult<bool> {
+        let idx = self.board.width * coords.col_idx + coords.row_idx;
+        if idx > self.board.cells.len() {
+            return Err("coordinates fire off the board".into());
+        }
+        Ok(true)
+    }
 }
 
 struct Board {
     cells: Vec<char>,
     fogged_cells: Vec<char>,
-    width: u32,
-    height: u32,
+    width: usize,
+    height: usize,
 }
 
 impl Board {
-    fn new(width: u32, height: u32) -> Self {
+    fn new(width: usize, height: usize) -> Self {
         let size = width * height;
         Board {
-            cells: vec![MISS; size as usize],
-            fogged_cells: vec![FOG_OF_WAR; size as usize],
+            cells: vec![MISS; size],
+            fogged_cells: vec![FOG_OF_WAR; size],
             width,
             height,
         }
@@ -128,13 +136,13 @@ impl Display for Board {
         // coordinate letters on fogged cells
         write!(f, "\t     ")?;
         for i in 0..self.width {
-            let c = char::from_u32(i + 65).unwrap();
+            let c = char::from_u32((i + 65) as u32).unwrap();
             write!(f, "{} ", c)?;
         }
         // coordinate letters on hidden cells
         write!(f, "\t     ")?;
         for i in 0..self.width {
-            let c = char::from_u32(i + 65).unwrap();
+            let c = char::from_u32((i + 65) as u32).unwrap();
             write!(f, "{} ", c)?;
         }
 
