@@ -68,37 +68,41 @@ impl Display for Board {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(f)?;
 
-        writeln!(f)?;
-
         for i in 0..self.height as usize {
-            write!(f, "\t")?;
+            let y_axis_coord = self.height as usize - i;
+            write!(f, "\t{:3} |", y_axis_coord)?;
             for j in 0..self.width as usize {
                 write!(f, "{} ", &self.fogged_cells[(i * 10) + j])?;
             }
 
-            write!(f, "\t")?;
+            let y_axis_coord = self.height as usize - i;
+            write!(f, "\t{:3} |", y_axis_coord)?;
             for j in 0..self.width as usize {
                 write!(f, "{} ", &self.cells[(i * 10) + j])?;
             }
             writeln!(f)?;
         }
 
-        write!(f, "\t")?;
+        // underline fogged cells
+        write!(f, "\t     ")?;
         for _ in 0..self.width {
             write!(f, "- ")?;
         }
-        write!(f, "\t")?;
+        // underline hidden cells
+        write!(f, "\t     ")?;
         for _ in 0..self.width {
             write!(f, "- ")?;
         }
         writeln!(f)?;
 
-        write!(f, "\t")?;
+        // coordinate letters on fogged cells
+        write!(f, "\t     ")?;
         for i in 0..self.width {
             let c = char::from_u32(i + 65).unwrap();
             write!(f, "{} ", c)?;
         }
-        write!(f, "\t")?;
+        // coordinate letters on hidden cells
+        write!(f, "\t     ")?;
         for i in 0..self.width {
             let c = char::from_u32(i + 65).unwrap();
             write!(f, "{} ", c)?;
