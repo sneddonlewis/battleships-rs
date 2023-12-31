@@ -9,6 +9,18 @@ const MISS: char = 'M';
 const HIT: char = 'X';
 const SHIP: char = 'O';
 
+pub enum VesselType {
+    Helicopter,
+}
+
+impl VesselType {
+    fn size(&self) -> usize {
+        match self {
+            VesselType::Helicopter => 1,
+        }
+    }
+}
+
 pub fn run() -> AppResult<()> {
     println!("Battleships");
     // AircraftCarrier 5
@@ -16,6 +28,7 @@ pub fn run() -> AppResult<()> {
     // Submarine 3
     // Cruiser 3
     // Destroyer 2
+    // Helicopter 1
 
     // properties of a ship
     // cells;
@@ -26,6 +39,11 @@ pub fn run() -> AppResult<()> {
     // Coord start;
     // Coord end;
     // sunkCount = 0;
+
+    // TODOs
+    // parse fire command
+    // limited shots
+    // add vessels to board
 
     let mut game = Game::new();
     game.show_board();
