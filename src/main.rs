@@ -1,8 +1,6 @@
-use std::process::exit;
-
 fn main() {
-    if let Err(e) = battleships_rs::run() {
+    if let Err(e) = battleships_rs::game::game_engine::Game::new().game_loop() {
         eprintln!("{}", e);
-        exit(1);
+        std::process::exit(1);
     }
 }
