@@ -1,25 +1,11 @@
 mod board_markers;
+pub mod coordinates;
 
-use crate::error::{AppError, AppResult};
+use crate::error::AppResult;
 use board_markers::{FOG_OF_WAR, HIT, MISS, SHIP};
+pub use coordinates::Coords;
 
 use std::fmt::Display;
-
-#[derive(Debug)]
-pub struct Coords {
-    row_idx: usize,
-    col_idx: usize,
-}
-
-impl TryFrom<&str> for Coords {
-    type Error = AppError;
-    fn try_from(_value: &str) -> Result<Self, Self::Error> {
-        Ok(Coords {
-            row_idx: 9,
-            col_idx: 0,
-        })
-    }
-}
 
 pub struct Game {
     board: Board,
