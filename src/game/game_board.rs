@@ -33,7 +33,7 @@ impl Board {
     }
 
     pub fn try_fire(&mut self, coords: Coords) -> AppResult<bool> {
-        let idx = self.width * coords.col_idx + coords.row_idx;
+        let idx = self.height * coords.row_idx + coords.col_idx;
         if idx > self.cells.len() {
             return Err("coordinates fire off the board".into());
         }
