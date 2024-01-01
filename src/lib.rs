@@ -60,6 +60,9 @@ pub fn run() -> AppResult<()> {
 
     println!("fire result: {}", fire_result);
 
+    let is_won = game.is_won();
+    println!("Is won: {}", is_won);
+
     game.show_board();
 
     Ok(())
@@ -87,9 +90,9 @@ struct Game {
 
 impl Game {
     fn new() -> Self {
-        Game {
-            board: Board::default(),
-        }
+        let mut board = Board::default();
+        board.cells[9] = SHIP;
+        Game { board }
     }
 
     fn show_board(&self) {
@@ -116,6 +119,10 @@ impl Game {
             return Ok(true);
         }
         panic!("expected unreachable when firing. Coordinate/target combination not covered");
+    }
+
+    fn is_won(&self) -> bool {
+        self.board.cells.contains(&MISS)
     }
 }
 
