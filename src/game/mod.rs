@@ -2,6 +2,7 @@ use crate::error::{AppError, AppResult};
 
 use std::fmt::Display;
 
+// move these to nested mod 'board_markers'
 pub const FOG_OF_WAR: char = '~';
 pub const MISS: char = 'M';
 pub const HIT: char = 'X';
@@ -65,6 +66,7 @@ impl Game {
     }
 }
 
+// mod game_board
 struct Board {
     cells: Vec<char>,
     fogged_cells: Vec<char>,
