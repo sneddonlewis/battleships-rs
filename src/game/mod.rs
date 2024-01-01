@@ -44,22 +44,23 @@ impl Game {
         // unwrap as we've already checked index
         let target = self.board.cells.get(idx).unwrap();
         let fogged_target = self.board.fogged_cells.get(idx).unwrap();
-        if *fogged_target != '~' {
+        if *fogged_target != FOG_OF_WAR {
             return Err("coordinates aren't targetting fog of war".into());
         }
-        if *target == 'M' {
-            self.board.fogged_cells[idx] = 'M';
+        if *target != SHIP {
+            self.board.fogged_cells[idx] = MISS;
             return Ok(false);
         }
-        if *target == 'O' {
-            self.board.fogged_cells[idx] = 'X';
+        if *target == SHIP {
+            self.board.fogged_cells[idx] = HIT;
+            self.board.cells[idx] = HIT;
             return Ok(true);
         }
         panic!("expected unreachable when firing. Coordinate/target combination not covered");
     }
 
     pub fn is_won(&self) -> bool {
-        self.board.cells.contains(&MISS)
+        !self.board.cells.contains(&SHIP)
     }
 }
 

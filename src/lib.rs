@@ -45,6 +45,10 @@ pub fn run() -> AppResult<()> {
     // add vessels to board
 
     let mut game = Game::new();
+
+    let is_won = game.is_won();
+    println!("Is won: {}", is_won);
+
     game.show_board();
     let mut input = String::new();
     println!("input fire coords");
