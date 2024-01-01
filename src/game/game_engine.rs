@@ -15,14 +15,22 @@ impl Game {
         }
     }
 
+    fn read_coordinates(&self) -> Coords {
+        let mut input = String::new();
+        let _ = io::stdin().read_line(&mut input).unwrap();
+        let coords = input.trim().try_into();
+        match coords {
+            Ok(c) => c,
+            Err(_) => self.read_coordinates(),
+        }
+    }
+
     pub fn game_loop(&mut self) -> AppResult<()> {
         while !self.is_won() {
             self.show_board();
-            let mut input = String::new();
-            println!("input fire coords");
-            let _ = io::stdin().read_line(&mut input)?;
 
-            let coords: Coords = input.trim().try_into()?;
+            println!("Enter target coordinates in the format 'B3'");
+            let coords = self.read_coordinates();
 
             println!("{:?}", coords);
 
