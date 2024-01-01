@@ -1,13 +1,13 @@
 use std::fmt::Display;
 
 use crate::error::AppResult;
-use crate::game::board_markers::{FOG_OF_WAR, MISS};
-use crate::game::board_markers::{HIT, SHIP};
 use crate::game::coordinates::Coords;
 
+use crate::game::board_markers::BoardMarker;
+
 pub struct Board {
-    cells: Vec<char>,
-    pub fogged_cells: Vec<char>,
+    cells: Vec<BoardMarker>,
+    pub fogged_cells: Vec<BoardMarker>,
     pub width: usize,
     pub height: usize,
 }
@@ -16,20 +16,20 @@ impl Board {
     pub fn new(width: usize, height: usize) -> Self {
         let size = width * height;
         Board {
-            cells: vec![MISS; size],
-            fogged_cells: vec![FOG_OF_WAR; size],
+            cells: vec![BoardMarker::Miss; size],
+            fogged_cells: vec![BoardMarker::FogOfWar; size],
             width,
             height,
         }
     }
     pub fn default() -> Self {
         let mut board = Board::new(10, 10);
-        board.cells[9] = SHIP;
+        board.cells[9] = BoardMarker::Ship;
         board
     }
 
     pub fn all_vessels_destroyed(&self) -> bool {
-        !self.cells.contains(&SHIP)
+        !self.cells.contains(&BoardMarker::Ship)
     }
 
     pub fn try_fire(&mut self, coords: Coords) -> AppResult<bool> {
@@ -40,16 +40,16 @@ impl Board {
         // unwrap as we've already checked index
         let target = self.cells.get(idx).unwrap();
         let fogged_target = self.fogged_cells.get(idx).unwrap();
-        if *fogged_target != FOG_OF_WAR {
+        if fogged_target != &BoardMarker::FogOfWar {
             return Err("coordinates aren't targetting fog of war".into());
         }
-        if *target != SHIP {
-            self.fogged_cells[idx] = MISS;
+        if target != &BoardMarker::Ship {
+            self.fogged_cells[idx] = BoardMarker::Miss;
             return Ok(false);
         }
-        if *target == SHIP {
-            self.fogged_cells[idx] = HIT;
-            self.cells[idx] = HIT;
+        if target == &BoardMarker::Ship {
+            self.fogged_cells[idx] = BoardMarker::Hit;
+            self.cells[idx] = BoardMarker::Hit;
             return Ok(true);
         }
         panic!("expected unreachable when firing. Coordinate/target combination not covered");
