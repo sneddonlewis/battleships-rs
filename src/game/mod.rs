@@ -1,12 +1,9 @@
+mod board_markers;
+
 use crate::error::{AppError, AppResult};
+use board_markers::{FOG_OF_WAR, HIT, MISS, SHIP};
 
 use std::fmt::Display;
-
-// move these to nested mod 'board_markers'
-pub const FOG_OF_WAR: char = '~';
-pub const MISS: char = 'M';
-pub const HIT: char = 'X';
-pub const SHIP: char = 'O';
 
 #[derive(Debug)]
 pub struct Coords {
