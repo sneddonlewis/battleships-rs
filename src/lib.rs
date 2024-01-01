@@ -6,7 +6,7 @@ mod game;
 use std::io;
 
 use crate::error::AppResult;
-use game::{Coords, Game};
+use crate::game::{coordinates::Coords, game_engine::Game};
 
 pub enum VesselType {
     Helicopter,
