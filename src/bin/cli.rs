@@ -12,9 +12,9 @@ fn main() {
         }
         Ok(won) => {
             if won {
-                println!("winner")
+                print_winner();
             } else {
-                println!("looser")
+                print_gameover();
             }
         }
     }
@@ -22,16 +22,17 @@ fn main() {
 
 fn cli_game_loop(mut game: Game) -> AppResult<bool> {
     while !game.is_gameover() {
+        clear_screen();
+        print_title();
         println!("{}", game);
 
         println!("Enter target coordinates:");
         let coords = read_coordinates();
 
-        let fire_result = game.fire(coords)?;
-
-        println!("fire result: {}", fire_result);
+        game.fire(coords)?;
     }
 
+    clear_screen();
     Ok(game.is_won())
 }
 
@@ -43,4 +44,35 @@ fn read_coordinates() -> Coords {
         Ok(c) => c,
         Err(_) => read_coordinates(),
     }
+}
+
+fn clear_screen() {
+    std::process::Command::new("clear").status().unwrap();
+}
+
+fn print_title() {
+    let title = r#"
+         __       ___ ___       ___     __          __   __  
+        |__)  /\   |   |  |    |__     /__` |__| | |__) /__` 
+        |__) /~~\  |   |  |___ |___    .__/ |  | | |    .__/ 
+"#;
+    println!("{}", title);
+}
+
+fn print_gameover() {
+    let title = r#"
+         __              ___  __        ___  __  
+        / _`  /\   |\/| |__  /  \ \  / |__  |__) 
+        \__> /~~\  |  | |___ \__/  \/  |___ |  \
+"#;
+    println!("{}", title);
+}
+
+fn print_winner() {
+    let title = r#"
+                          ___  __  
+        |  | | |\ | |\ | |__  |__) 
+        |/\| | | \| | \| |___ |  \
+"#;
+    println!("{}", title);
 }
