@@ -32,15 +32,11 @@ impl Board {
     }
 
     fn place_ships(&mut self) {
-        // let helicopter_location = Coords::new(5, 5);
-        // let idx: usize = helicopter_location.into();
-        // let heli = Vessel::try_place(vec![idx]).unwrap();
-        // self.cells[idx] = BoardMarker::Ship;
-        // self.vessels.push(heli);
         self.place_vessel(vec![5]);
-        self.place_vessel(vec![83]);
-        self.place_vessel(vec![77]);
-        self.place_vessel(vec![41]);
+        self.place_vessel(vec![83, 84]);
+        self.place_vessel(vec![77, 78, 79]);
+        self.place_vessel(vec![41, 42, 43, 44]);
+        self.place_vessel(vec![11, 12, 13, 14]);
     }
 
     fn place_vessel(&mut self, position: Vec<usize>) -> bool {
@@ -48,7 +44,9 @@ impl Board {
             return false;
         }
         let vessel = Vessel::try_place(position.clone()).unwrap();
-        self.cells[position[0]] = BoardMarker::Ship;
+        for p in position.iter() {
+            self.cells[*p] = BoardMarker::Ship;
+        }
         self.vessels.push(vessel);
         true
     }
