@@ -6,6 +6,18 @@ pub struct Coords {
     pub col_idx: usize,
 }
 
+impl Coords {
+    pub fn new(row_idx: usize, col_idx: usize) -> Self {
+        Coords { row_idx, col_idx }
+    }
+}
+
+impl Into<usize> for Coords {
+    fn into(self) -> usize {
+        10 * self.row_idx + self.col_idx
+    }
+}
+
 impl TryFrom<&str> for Coords {
     type Error = AppError;
     fn try_from(value: &str) -> Result<Self, Self::Error> {

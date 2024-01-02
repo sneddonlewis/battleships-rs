@@ -4,10 +4,12 @@ use crate::error::AppResult;
 use crate::game::coordinates::Coords;
 
 use crate::game::board_markers::BoardMarker;
+use crate::vessels::Vessel;
 
 pub struct Board {
     cells: Vec<BoardMarker>,
     pub fogged_cells: Vec<BoardMarker>,
+    vessels: Vec<Vessel>,
     pub width: usize,
     pub height: usize,
 }
@@ -18,14 +20,23 @@ impl Board {
         Board {
             cells: vec![BoardMarker::Miss; size],
             fogged_cells: vec![BoardMarker::FogOfWar; size],
+            vessels: Vec::new(),
             width,
             height,
         }
     }
     pub fn default() -> Self {
         let mut board = Board::new(10, 10);
-        board.cells[9] = BoardMarker::Ship;
+        board.place_ships();
         board
+    }
+
+    fn place_ships(&mut self) {
+        let helicopter_location = Coords::new(5, 5);
+        let idx: usize = helicopter_location.into();
+        let heli = Vessel::try_place(vec![idx]).unwrap();
+        self.cells[idx] = BoardMarker::Ship;
+        self.vessels.push(heli);
     }
 
     pub fn all_vessels_destroyed(&self) -> bool {
@@ -33,7 +44,7 @@ impl Board {
     }
 
     pub fn try_fire(&mut self, coords: Coords) -> AppResult<bool> {
-        let idx = self.height * coords.row_idx + coords.col_idx;
+        let idx: usize = coords.into();
         if idx > self.cells.len() {
             return Err("coordinates fire off the board".into());
         }
