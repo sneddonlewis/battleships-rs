@@ -1,5 +1,7 @@
 #![allow(dead_code)]
 
+use std::fmt::Display;
+
 use crate::error::{AppError, AppResult};
 
 pub struct Vessel {
@@ -24,19 +26,31 @@ impl Vessel {
     pub fn fire(&mut self, shot: usize) -> bool {
         if self.location.contains(&shot) {
             self.hits.push(shot);
-            // update status
+            self.update_status();
             return true;
         }
         false
     }
+
+    fn update_status(&mut self) {
+        if self.hits.len() == 0 {
+            self.status = VesselState::Pristine;
+        }
+        if self.location.len() == self.hits.len() {
+            self.status = VesselState::Sunk;
+        }
+        self.status = VesselState::Damaged(self.hits.len(), self.location.len())
+    }
 }
 
+#[derive(Debug)]
 enum VesselState {
     Pristine,
-    Damaged(u8, u8),
+    Damaged(usize, usize),
     Sunk,
 }
 
+#[derive(Debug)]
 pub enum VesselType {
     Helicopter,
     Submarine,
@@ -56,5 +70,11 @@ impl TryFrom<usize> for VesselType {
             5 => Ok(VesselType::AircraftCarrier),
             _ => Err("no matching vessel for the provided size".into()),
         }
+    }
+}
+
+impl Display for Vessel {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "{:?} {:?}", self.status, self.class)
     }
 }

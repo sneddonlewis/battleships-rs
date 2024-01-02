@@ -89,6 +89,10 @@ impl Display for Board {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(f)?;
 
+        for v in self.vessels.iter() {
+            writeln!(f, "{}", v)?;
+        }
+
         for i in 0..self.height as usize {
             let y_axis_coord = self.height as usize - i;
             write!(f, "\t{:3} |", y_axis_coord)?;
