@@ -5,14 +5,23 @@ use battleships_rs::{
 use std::io;
 
 fn main() {
-    if let Err(e) = cli_game_loop(Game::new()) {
-        eprintln!("{}", e);
-        std::process::exit(1);
+    match cli_game_loop(Game::new()) {
+        Err(e) => {
+            eprintln!("{}", e);
+            std::process::exit(1);
+        }
+        Ok(won) => {
+            if won {
+                println!("winner")
+            } else {
+                println!("looser")
+            }
+        }
     }
 }
 
-fn cli_game_loop(mut game: Game) -> AppResult<()> {
-    while !game.is_won() {
+fn cli_game_loop(mut game: Game) -> AppResult<bool> {
+    while !game.is_gameover() {
         println!("{}", game);
 
         println!("Enter target coordinates:");
@@ -23,7 +32,7 @@ fn cli_game_loop(mut game: Game) -> AppResult<()> {
         println!("fire result: {}", fire_result);
     }
 
-    Ok(())
+    Ok(game.is_won())
 }
 
 fn read_coordinates() -> Coords {

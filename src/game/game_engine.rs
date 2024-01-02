@@ -19,6 +19,10 @@ impl Game {
         self.board.try_fire(coords)
     }
 
+    pub fn is_gameover(&self) -> bool {
+        self.is_won()
+    }
+
     pub fn is_won(&self) -> bool {
         self.board.all_vessels_destroyed()
     }
