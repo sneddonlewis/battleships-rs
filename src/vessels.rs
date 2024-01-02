@@ -35,11 +35,19 @@ impl Vessel {
     fn update_status(&mut self) {
         if self.hits.len() == 0 {
             self.status = VesselState::Pristine;
+            return;
         }
         if self.location.len() == self.hits.len() {
             self.status = VesselState::Sunk;
+            return;
         }
         self.status = VesselState::Damaged(self.hits.len(), self.location.len())
+    }
+}
+
+impl Display for Vessel {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "{:?} {:?}", self.status, self.class)
     }
 }
 
@@ -70,11 +78,5 @@ impl TryFrom<usize> for VesselType {
             5 => Ok(VesselType::AircraftCarrier),
             _ => Err("no matching vessel for the provided size".into()),
         }
-    }
-}
-
-impl Display for Vessel {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "{:?} {:?}", self.status, self.class)
     }
 }
