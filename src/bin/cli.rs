@@ -13,7 +13,7 @@ fn main() {
 
 fn cli_game_loop(mut game: Game) -> AppResult<()> {
     while !game.is_won() {
-        game.show_board();
+        println!("{}", game);
 
         println!("Enter target coordinates:");
         let coords = read_coordinates();

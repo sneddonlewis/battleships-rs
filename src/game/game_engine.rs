@@ -1,4 +1,4 @@
-use std::io;
+use std::fmt::Display;
 
 use crate::error::AppResult;
 use crate::game::coordinates::Coords;
@@ -15,40 +15,17 @@ impl Game {
         }
     }
 
-    fn read_coordinates(&self) -> Coords {
-        let mut input = String::new();
-        let _ = io::stdin().read_line(&mut input).unwrap();
-        let coords = input.trim().try_into();
-        match coords {
-            Ok(c) => c,
-            Err(_) => self.read_coordinates(),
-        }
-    }
-
-    pub fn game_loop(&mut self) -> AppResult<()> {
-        while !self.is_won() {
-            self.show_board();
-
-            println!("Enter target coordinates:");
-            let coords = self.read_coordinates();
-
-            let fire_result = self.fire(coords)?;
-
-            println!("fire result: {}", fire_result);
-        }
-
-        Ok(())
-    }
-
-    pub fn show_board(&self) {
-        println!("{}", self.board);
-    }
-
     pub fn fire(&mut self, coords: Coords) -> AppResult<bool> {
         self.board.try_fire(coords)
     }
 
     pub fn is_won(&self) -> bool {
         self.board.all_vessels_destroyed()
+    }
+}
+
+impl Display for Game {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.board)
     }
 }
