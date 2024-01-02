@@ -32,11 +32,34 @@ impl Board {
     }
 
     fn place_ships(&mut self) {
-        let helicopter_location = Coords::new(5, 5);
-        let idx: usize = helicopter_location.into();
-        let heli = Vessel::try_place(vec![idx]).unwrap();
-        self.cells[idx] = BoardMarker::Ship;
-        self.vessels.push(heli);
+        // let helicopter_location = Coords::new(5, 5);
+        // let idx: usize = helicopter_location.into();
+        // let heli = Vessel::try_place(vec![idx]).unwrap();
+        // self.cells[idx] = BoardMarker::Ship;
+        // self.vessels.push(heli);
+        self.place_vessel(vec![5]);
+        self.place_vessel(vec![83]);
+        self.place_vessel(vec![77]);
+        self.place_vessel(vec![41]);
+    }
+
+    fn place_vessel(&mut self, position: Vec<usize>) -> bool {
+        if !self.is_space_for_vessel(&position) {
+            return false;
+        }
+        let vessel = Vessel::try_place(position.clone()).unwrap();
+        self.cells[position[0]] = BoardMarker::Ship;
+        self.vessels.push(vessel);
+        true
+    }
+
+    fn is_space_for_vessel(&self, position: &Vec<usize>) -> bool {
+        for pos in position {
+            if self.cells[*pos] == BoardMarker::Ship {
+                return false;
+            }
+        }
+        true
     }
 
     pub fn all_vessels_destroyed(&self) -> bool {
@@ -48,22 +71,17 @@ impl Board {
         if idx > self.cells.len() {
             return Err("coordinates fire off the board".into());
         }
-        // unwrap as we've already checked index
-        let target = self.cells.get(idx).unwrap();
-        let fogged_target = self.fogged_cells.get(idx).unwrap();
-        if fogged_target != &BoardMarker::FogOfWar {
-            return Err("coordinates aren't targetting fog of war".into());
+        for vessel in self.vessels.iter_mut() {
+            let hit = vessel.fire(idx);
+            if hit {
+                self.fogged_cells[idx] = BoardMarker::Hit;
+                self.cells[idx] = BoardMarker::Hit;
+                return Ok(true);
+            }
         }
-        if target != &BoardMarker::Ship {
-            self.fogged_cells[idx] = BoardMarker::Miss;
-            return Ok(false);
-        }
-        if target == &BoardMarker::Ship {
-            self.fogged_cells[idx] = BoardMarker::Hit;
-            self.cells[idx] = BoardMarker::Hit;
-            return Ok(true);
-        }
-        panic!("expected unreachable when firing. Coordinate/target combination not covered");
+        self.fogged_cells[idx] = BoardMarker::Miss;
+        self.cells[idx] = BoardMarker::Miss;
+        Ok(false)
     }
 }
 

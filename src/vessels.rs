@@ -20,6 +20,15 @@ impl Vessel {
             status: VesselState::Pristine,
         })
     }
+
+    pub fn fire(&mut self, shot: usize) -> bool {
+        if self.location.contains(&shot) {
+            self.hits.push(shot);
+            // update status
+            return true;
+        }
+        false
+    }
 }
 
 enum VesselState {
