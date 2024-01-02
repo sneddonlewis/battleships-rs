@@ -29,20 +29,12 @@ impl Game {
         while !self.is_won() {
             self.show_board();
 
-            println!("Enter target coordinates in the format 'B3'");
+            println!("Enter target coordinates:");
             let coords = self.read_coordinates();
 
-            println!("{:?}", coords);
-
-            println!("firing");
             let fire_result = self.fire(coords)?;
 
             println!("fire result: {}", fire_result);
-
-            let is_won = self.is_won();
-            println!("Is won: {}", is_won);
-
-            self.show_board();
         }
 
         Ok(())
